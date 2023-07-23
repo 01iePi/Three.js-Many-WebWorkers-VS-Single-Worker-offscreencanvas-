@@ -1,0 +1,88 @@
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" type="text/css" href="./worker.css">
+</head>
+
+<script language="JavaScript" type="text/javascript">
+  let web_worker_array = [];
+
+
+  function Checkvalues() {
+    if (document.contactform.MW.checked) {
+      make_worker(1);
+    }
+    else {
+      make_worker(0);
+    }
+  }
+
+  function make_worker(mode) {
+    let myCanvas = document.getElementById("myCanvas");
+    for (let ii = 0; ii < web_worker_array.length; ii++) {
+      web_worker_array[ii].terminate();
+    }
+    web_worker_array.length = 0;
+    myCanvas.innerHTML = "";
+
+    let worker_num = 1;
+    let point_num = document.contactform.Point_numberX1000.value * 1000;
+
+    let id = "worker_canvas";
+    if (mode > 0) {
+      worker_num = point_num / 100;
+      point_num = 100;
+
+    }
+    let workers_chechbox = document.getElementById("web_worker_chk");
+    let info = "WebWorker number=" + worker_num.toString() + "  (" + point_num.toString() + "points / WebWorker )";
+    workers_chechbox.innerHTML = info;
+    for (let ii = 0; ii < worker_num; ii++) {
+      const worker = new Worker("./worker.js", { type: 'module' });
+      const worker_canvas = document.createElement("canvas");
+      let wname = id + ii.toString();
+      worker_canvas.id = wname;
+      worker_canvas.className = "myCanvas_worker";
+
+      myCanvas.appendChild(worker_canvas);
+      web_worker_array.push(worker);
+      const canvasElement = document.querySelector("#" + wname);
+      const offscreenCanvas = canvasElement.transferControlToOffscreen();
+
+
+      worker.postMessage(
+        {
+          type: "init",
+          canvas: offscreenCanvas,
+          width: myCanvas.clientWidth,
+          height: myCanvas.clientHeight,
+          devicePixelRatio: devicePixelRatio,
+          id: wname,
+          point_num: point_num
+
+        },
+        [offscreenCanvas]
+      );
+    }
+  }
+</script>
+
+<script type="module">
+  make_worker(0);
+</script>
+
+<body>
+  <form name="contactform" action="#" method="GET" style="position: absolute; top: 0; z-index: 100; color: aqua;">
+    <p>Point Number X 1000<br>
+      <input type="number" name="Point_numberX1000" value=1 onclick="Checkvalues();">
+    </p>
+    <p><br>
+      <input id="workers_checkbox" type="checkbox" name="MW" value=0 onclick="Checkvalues();">Multi WebWorker
+    <p id="web_worker_chk"></p>
+    </p>
+  </form>
+  <div id="myCanvas" class="myCanvas"></div>
+</body>
+
+</html>
