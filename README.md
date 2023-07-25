@@ -1,18 +1,17 @@
-# Three.js-Many-WebWorkers-VS-Single-Worker-offscreencanvas-
-The Performance of Many WebWorkers is BAD. Why?
+# Three.js Many WebWorkers VS Single Worker (offscreencanvas)
+
 
 [What about?]
 Three.js
 OffscreenCanvas
 WebWroker
 
-[Probrem]
-
+[Concept]
 Points number = WebWorker Number * Points Number/WebWorker Number
 
 If WebWroker Number is large, rendering crush.
 
-How to solve?
+
 
 
 
