@@ -1,10 +1,4 @@
-# Three.js Many WebWorkers VS Single Worker (offscreencanvas)
-
-
-[What about?]
-Three.js
-OffscreenCanvas
-WebWroker
+# Three.js / Offscreencanvas /WebWorker -Performance of Many WebWorkers VS Single Worker
 
 [Concept]
 Points number = WebWorker Number * Points Number/WebWorker Number
